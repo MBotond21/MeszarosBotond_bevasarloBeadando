@@ -1,5 +1,6 @@
 package com.example.bevasarlobeadando;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -11,6 +12,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,13 +36,23 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+        RetrofitApiService apiService = RetrofitClient.getInstance().create(RetrofitApiService.class);
+
         init();
 
         btn_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(correctInputs()){
-                    Toast.makeText(MainActivity.this, "Ügyi vagy!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Sikeres adatfelvétel!", Toast.LENGTH_SHORT).show();
+
+                    postProduct(apiService);
+
+                    Intent ujIntent = new Intent(MainActivity.this, ListActivity.class);
+
+                    startActivity(ujIntent);
+
+                    finish();
                 }
             }
         });
@@ -80,6 +95,30 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return true;
+    }
+
+    private void postProduct(RetrofitApiService apiService){
+        String nev = i_name.getText().toString();
+        int egyseg_ar = Integer.parseInt(i_price.getText().toString());
+        double mennyiseg = Double.parseDouble(i_quantity.getText().toString());
+        String mertekegyseg = i_mesure.getText().toString();
+        Termek product = new Termek(nev, egyseg_ar, mennyiseg, mertekegyseg);
+
+        apiService.createProduct(product).enqueue(new Callback<Termek>() {
+            @Override
+            public void onResponse(Call<Termek> call, Response<Termek> response) {
+                if (response.isSuccessful()) {
+                    System.out.println("Product created: " + response.body());
+                } else {
+                    System.err.println("Failed to create product. Error code: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Termek> call, Throwable t) {
+                System.err.println("Error creating product: " + t.getMessage());
+            }
+        });
     }
 
     private void init(){

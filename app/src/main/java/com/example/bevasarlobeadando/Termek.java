@@ -7,12 +7,15 @@ public class Termek {
     private String mertekegyseg;
     private double brutto_ar;
 
-    public Termek(String nev, int egyseg_ar, int mennyiseg, String mertekegyseg) {
+    public Termek(String nev, int egyseg_ar, double mennyiseg, String mertekegyseg) {
         this.nev = nev;
         this.egyseg_ar = egyseg_ar;
         this.mennyiseg = mennyiseg;
         this.mertekegyseg = mertekegyseg;
         setBrutto_ar();
+    }
+
+    public Termek() {
     }
 
     public String getNev() {
@@ -35,7 +38,7 @@ public class Termek {
         return mennyiseg;
     }
 
-    public void setMennyiseg(int mennyiseg) {
+    public void setMennyiseg(double mennyiseg) {
         this.mennyiseg = mennyiseg;
     }
 
