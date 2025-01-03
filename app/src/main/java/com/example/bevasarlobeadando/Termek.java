@@ -1,13 +1,15 @@
 package com.example.bevasarlobeadando;
 
 public class Termek {
+    private int id;
     private String nev;
     private int egyseg_ar;
     private double mennyiseg;
     private String mertekegyseg;
     private double brutto_ar;
 
-    public Termek(String nev, int egyseg_ar, double mennyiseg, String mertekegyseg) {
+    public Termek(int id, String nev, int egyseg_ar, double mennyiseg, String mertekegyseg) {
+        this.id = id;
         this.nev = nev;
         this.egyseg_ar = egyseg_ar;
         this.mennyiseg = mennyiseg;
@@ -16,6 +18,10 @@ public class Termek {
     }
 
     public Termek() {
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getNev() {

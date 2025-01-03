@@ -47,7 +47,7 @@ public class CustomAdapter extends BaseAdapter {
         name.setText(p.getNev());
         price.setText(String.valueOf(p.getEgyseg_ar()).concat(" Ft"));
         qunatMes.setText(String.valueOf(p.getMennyiseg()).concat(p.getMertekegyseg()));
-        actPrice.setText(String.valueOf(p.getBrutto_ar()));
+        actPrice.setText(String.valueOf(p.getBrutto_ar()).concat(" Ft"));
 
         return view;
     }

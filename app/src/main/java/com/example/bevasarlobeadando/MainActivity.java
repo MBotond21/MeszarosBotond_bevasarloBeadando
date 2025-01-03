@@ -44,15 +44,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(correctInputs()){
-                    Toast.makeText(MainActivity.this, "Sikeres adatfelvétel!", Toast.LENGTH_SHORT).show();
-
                     postProduct(apiService);
-
-                    Intent ujIntent = new Intent(MainActivity.this, ListActivity.class);
-
-                    startActivity(ujIntent);
-
-                    finish();
                 }
             }
         });
@@ -102,13 +94,24 @@ public class MainActivity extends AppCompatActivity {
         int egyseg_ar = Integer.parseInt(i_price.getText().toString());
         double mennyiseg = Double.parseDouble(i_quantity.getText().toString());
         String mertekegyseg = i_mesure.getText().toString();
-        Termek product = new Termek(nev, egyseg_ar, mennyiseg, mertekegyseg);
+
+        Termek product = new Termek();
+        product.setNev(nev);
+        product.setEgyseg_ar(egyseg_ar);
+        product.setMennyiseg(mennyiseg);
+        product.setMertekegyseg(mertekegyseg);
+        product.setBrutto_ar();
 
         apiService.createProduct(product).enqueue(new Callback<Termek>() {
             @Override
             public void onResponse(Call<Termek> call, Response<Termek> response) {
                 if (response.isSuccessful()) {
-                    System.out.println("Product created: " + response.body());
+                    Toast.makeText(MainActivity.this, "Sikeres adatfelvétel!", Toast.LENGTH_SHORT).show();
+                    Intent ujIntent = new Intent(MainActivity.this, ListActivity.class);
+
+                    startActivity(ujIntent);
+
+                    finish();
                 } else {
                     System.err.println("Failed to create product. Error code: " + response.code());
                 }

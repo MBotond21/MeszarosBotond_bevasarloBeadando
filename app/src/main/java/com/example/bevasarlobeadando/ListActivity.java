@@ -3,6 +3,7 @@ package com.example.bevasarlobeadando;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -46,11 +47,23 @@ public class ListActivity extends AppCompatActivity {
         btn_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent ujIntent = new Intent(ListActivity.this, MainActivity.class);
+                Intent newIntent = new Intent(ListActivity.this, MainActivity.class);
 
-                startActivity(ujIntent);
+                startActivity(newIntent);
 
                 finish();
+            }
+        });
+
+        lw_products.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent newIntent = new Intent(ListActivity.this, TermekActivity.class);
+                newIntent.putExtra("id", products.get(position).getId());
+                startActivity(newIntent);
+
+                finish();
+                return false;
             }
         });
 
@@ -69,22 +82,10 @@ public class ListActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<Termek>> call, Response<List<Termek>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    List<Termek> filteredProducts = new ArrayList<>();
-
-                    for (Termek termek : response.body()) {
-                        Termek filteredTermek = new Termek();
-                        filteredTermek.setNev(termek.getNev());
-                        filteredTermek.setEgyseg_ar(termek.getEgyseg_ar());
-                        filteredTermek.setMennyiseg(termek.getMennyiseg());
-                        filteredTermek.setMertekegyseg(termek.getMertekegyseg());
-                        filteredTermek.setBrutto_ar();
-
-                        filteredProducts.add(filteredTermek);
-                    }
-
                     products.clear();
-                    products.addAll(filteredProducts);
+                    products.addAll(response.body());
                     customAdapter.notifyDataSetChanged();
+                    System.out.println("ListActivity loaded with products");
                 } else {
                     Toast.makeText(ListActivity.this, "Ez most nem jött össze kicsi!", Toast.LENGTH_SHORT).show();
                 }
