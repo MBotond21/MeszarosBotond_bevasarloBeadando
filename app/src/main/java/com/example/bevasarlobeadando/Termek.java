@@ -24,6 +24,10 @@ public class Termek {
         return id;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public String getNev() {
         return nev;
     }
@@ -38,6 +42,7 @@ public class Termek {
 
     public void setEgyseg_ar(int egyseg_ar) {
         this.egyseg_ar = egyseg_ar;
+        setBrutto_ar();
     }
 
     public double getMennyiseg() {
@@ -46,6 +51,7 @@ public class Termek {
 
     public void setMennyiseg(double mennyiseg) {
         this.mennyiseg = mennyiseg;
+        setBrutto_ar();
     }
 
     public String getMertekegyseg() {

@@ -82,8 +82,21 @@ public class ListActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<Termek>> call, Response<List<Termek>> response) {
                 if (response.isSuccessful() && response.body() != null) {
+                    List<Termek> filteredProducts = new ArrayList<>();
+
+                    for (Termek termek : response.body()) {
+                        Termek filteredTermek = new Termek();
+                        filteredTermek.setId(termek.getId());
+                        filteredTermek.setNev(termek.getNev());
+                        filteredTermek.setEgyseg_ar(termek.getEgyseg_ar());
+                        filteredTermek.setMennyiseg(termek.getMennyiseg());
+                        filteredTermek.setMertekegyseg(termek.getMertekegyseg());
+                        filteredTermek.setBrutto_ar();
+                        filteredProducts.add(filteredTermek);
+                    }
+
                     products.clear();
-                    products.addAll(response.body());
+                    products.addAll(filteredProducts);
                     customAdapter.notifyDataSetChanged();
                     System.out.println("ListActivity loaded with products");
                 } else {

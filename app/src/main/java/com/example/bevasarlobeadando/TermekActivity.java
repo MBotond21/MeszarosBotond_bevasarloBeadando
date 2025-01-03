@@ -15,6 +15,9 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -44,6 +47,15 @@ public class TermekActivity extends AppCompatActivity {
         RetrofitApiService apiService = RetrofitClient.getInstance().create(RetrofitApiService.class);
 
         init();
+
+        btn_modify.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(correctInputs()){
+                    patchProduct(apiService);
+                }
+            }
+        });
 
         btn_delete.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,10 +103,12 @@ public class TermekActivity extends AppCompatActivity {
         if (isEmpty(m_name) && isEmpty(m_price) && isEmpty(m_quantity) && isEmpty(m_mesure)) {
             Toast.makeText(TermekActivity.this, "Legalább egy mező kitöltése kötelező!", Toast.LENGTH_SHORT).show();
             return false;
-        } else if (!isInt(m_price)) {
+        }
+        if (!isEmpty(m_price) && !isInt(m_price)) {
             Toast.makeText(TermekActivity.this, "Az ár mindenképpen egy egész szám kell legyen!", Toast.LENGTH_SHORT).show();
             return false;
-        } else if (!isDouble(m_quantity)) {
+        }
+        if (!isEmpty(m_quantity) && !isDouble(m_quantity)) {
             Toast.makeText(TermekActivity.this, "Az mennyiségnek mindenképpen egy szám kell legyen!", Toast.LENGTH_SHORT).show();
             return false;
         }
@@ -158,5 +172,35 @@ public class TermekActivity extends AppCompatActivity {
 
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    private void patchProduct(RetrofitApiService apiService){
+
+        Map<String, Object> updates = new HashMap<>();
+        if (!isEmpty(m_name)) updates.put("nev", m_name.getText().toString());
+        if (!isEmpty(m_price)) updates.put("egyseg_ar", Integer.parseInt(m_price.getText().toString()));
+        if (!isEmpty(m_quantity)) updates.put("mennyiseg", Double.parseDouble(m_quantity.getText().toString()));
+        if (!isEmpty(m_mesure)) updates.put("mertekegyseg", m_mesure.getText().toString());
+
+        apiService.patchProduct(id, updates).enqueue(new Callback<Termek>() {
+            @Override
+            public void onResponse(Call<Termek> call, Response<Termek> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(TermekActivity.this, "Sikeres adatmódosítás!", Toast.LENGTH_SHORT).show();
+                    Intent ujIntent = new Intent(TermekActivity.this, ListActivity.class);
+
+                    startActivity(ujIntent);
+
+                    finish();
+                } else {
+                    System.err.println("Failed to create product. Error code: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Termek> call, Throwable t) {
+                System.err.println("Error creating product: " + t.getMessage());
+            }
+        });
     }
 }
